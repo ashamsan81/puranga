@@ -1,8 +1,9 @@
 ---
 - hosts: all
   become: yes
-  tasks:
+  pre_tasks:
     - name: hello world
       debug:
         msg: "Hello World"
-      
+  roles:
+    - ../roles/restartanything     
