@@ -1,0 +1,17 @@
+---
+
+# Directory that will be used as the location for the download
+dest_path: "/tmp"
+
+# This NRPE package is only used for the plugin, as the nrpe plugin on some distributions
+# require the distributions Nagios package to be installed.
+nrpetarball: nrpe.tar.gz
+nrpesrc: nrpe-nrpe-3.2.1
+
+# Location of monitoring plugins
+plugins_dir: /usr/local/nagios/libexec
+
+# Nagios server IP
+# default is localhost IP
+# you can add multiple servers separated by comma without space
+nagios_server: 127.0.0.1

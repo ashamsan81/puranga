@@ -1,0 +1,50 @@
+---
+# tasks file for nrpe_install
+- name: install pre-requisites 
+  yum:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - gcc
+    - glibc
+    - glibc-common
+    - make
+    - openssl-devel
+
+- name: Ensure dest. directory exists
+  file:
+    path: "{{ dest_path }}"
+    state: directory
+
+- name: Ensure plugins directory exists
+  file:
+    path: "{{ plugins_dir }}"
+    state: directory
+
+- name: unpack tarball file to the dest
+  unarchive:
+    src: "{{ nrpetarball }}"
+    dest: "{{ dest_path }}"
+
+- name: configure nrpe
+  shell: cd {{ dest_path }}/{{ nrpesrc }} && ./configure --with-ssl=/usr/bin/openssl --enable-command-args creates={{ dest_path }}/{{ nrpesrc }}/Makefile
+
+- name: make check_nrpe demaon
+  make:
+    chdir: "{{ dest_path }}/{{ nrpesrc }}"
+    target: "{{ item }}"
+  loop:
+    - install-groups-users
+    - check_nrpe
+    - install
+    - install-config
+    - install-init
+    - install-plugin
+
+- name: deploy nrpe.cfg template
+  template:
+    src: nrpe.cfg.j2
+    dest: /usr/local/nagios/etc/nrpe.cfg
+    owner: nagios
+    group: nagios
+

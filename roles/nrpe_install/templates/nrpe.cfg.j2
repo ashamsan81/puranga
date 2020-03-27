@@ -1,0 +1,37 @@
+######
+# 
+# this file is maintained by Ansible don't change it manually
+#
+######
+
+log_facility=daemon
+pid_file=/var/run/nrpe/nrpe.pid
+server_port=5666
+nrpe_user=nrpe
+nrpe_group=nrpe
+dont_blame_nrpe=1
+debug=0
+command_timeout=300
+connection_timeout=300
+
+#  10.65.101.160 is akl0mg271.airnz.co.nz
+
+allowed_hosts= {{ nagios_server }}
+ 
+command[return_cfg]=/usr/local/nagios/libexec/return_cfg $ARG1$
+command[check_cpu_load]=/usr/local/nagios/libexec/check_load -w 400,400,400 -c 401,401,401
+command[check_cpu_pct]=/usr/local/nagios/libexec/check_cpu -uw 90 -uc 95
+command[check_mem_free]=/usr/local/nagios/libexec/check_mem -w 10 -c 5 -f -C
+command[check_swap]=/usr/local/nagios/libexec/check_swap -w 15% -c 5%
+command[check_fs_root]=/usr/local/nagios/libexec/check_disk -w 10% -c 5% -p /
+command[check_fs_home]=/usr/local/nagios/libexec/check_disk -w 10% -c 5% -p /home
+command[check_fs_opt]=/usr/local/nagios/libexec/check_disk -w 10% -c 5% -p /opt
+command[check_fs_usr]=/usr/local/nagios/libexec/check_disk -w 10% -c 5% -p /usr
+command[check_fs_var]=/usr/local/nagios/libexec/check_disk -w 10% -c 5% -p /var
+command[check_fs_tmp]=/usr/local/nagios/libexec/check_disk -w 10% -c 5% -p /tmp
+command[check_proc_total]=/usr/local/nagios/libexec/check_procs_perf -w 900 -c 1000
+command[check_proc_zombie]=/usr/local/nagios/libexec/check_procs -w 3 -c 5 -s Z
+command[check_os_version]= /usr/local/nagios/libexec/check_os_version
+command[check_aide_report]=sudo /usr/local/nagios/libexec/check_logfiles --config /usr/local/nagios/etc/check_logfiles.aide.cfg --searches=AIDE-Differences
+
+

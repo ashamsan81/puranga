@@ -1,0 +1,35 @@
+---
+# tasks file for nagios_plugins_install
+
+- name: Ensure dest. directory exists
+  file:
+    path: "{{ dest_path }}"
+    state: directory
+
+- name: insure the plugins directory is exist
+  file:
+    path: "{{ plugins_dir }}"
+    state: directory
+
+- name: unpack tarball file to the dest
+  unarchive:
+    src: "{{ pluginstarball }}"
+    dest: "{{ dest_path }}"
+
+- name: configure nagios plugins
+  shell: cd {{ dest_path }}/{{ pluginssrc }} && ./configure --with-openssl
+
+- name: make nagios plugins install
+  make:
+    chdir: "{{ dest_path }}/{{ pluginssrc }}"
+    target: "{{ item }}"
+  loop:
+    - all
+    - install 
+- name: change plugins owner/group to nagios
+  file:
+    path: "{{ plugins_dir }}"
+    state: directory
+    recurse: yes
+    owner: nagios
+    group: nagios
